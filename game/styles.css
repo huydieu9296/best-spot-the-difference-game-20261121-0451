@@ -1,0 +1,112 @@
+/* Twin Lanterns — layout and HUD. All local, no web fonts. */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #14101d;
+  color: #f5ead2;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+#stage {
+  width: 1280px;
+  max-width: 100vw;
+  margin: 0 auto;
+  padding: 10px 12px 8px;
+}
+#hud {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+  background: linear-gradient(90deg, #2a1a3d, #4a2430);
+  border: 1px solid #6b4a2f;
+  border-radius: 10px;
+}
+.brand {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ffd76a;
+  text-shadow: 0 2px 0 #7a2e12;
+  white-space: nowrap;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 76px;
+  padding: 2px 10px;
+  background: rgba(0, 0, 0, 0.30);
+  border-radius: 8px;
+}
+.stat .label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #d8b98a;
+}
+.stat span:last-child { font-size: 19px; font-weight: 700; }
+.stat.big { margin-left: auto; border: 2px solid #ffd76a; }
+.stat.big span:last-child { font-size: 24px; color: #ffd76a; }
+#hud-time.low { color: #ff6b5e; }
+#board-wrap {
+  position: relative;
+  margin-top: 10px;
+  border: 1px solid #6b4a2f;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0d0a14;
+}
+#board { display: block; width: 100%; height: auto; cursor: crosshair; }
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 6, 18, 0.72);
+}
+#overlay.hidden { display: none; }
+#overlay .panel {
+  width: 560px;
+  max-width: 90%;
+  padding: 28px 30px 22px;
+  text-align: center;
+  background: #241a33;
+  border: 2px solid #ffd76a;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+#overlay h1 { margin: 0 0 10px; font-size: 34px; color: #ffd76a; }
+#overlay p { margin: 8px 0; font-size: 17px; line-height: 1.5; }
+#overlay .sub { color: #d8b98a; font-size: 15px; }
+#overlay-btn {
+  margin-top: 14px;
+  padding: 12px 34px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #241a10;
+  background: #ffd76a;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+#overlay-btn:hover { background: #ffe08f; }
+#overlay .keys { margin-top: 16px; font-size: 13px; color: #9d8bb5; }
+#helpbar {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: #c9b48f;
+}
+#helpbar .right { text-align: right; }
+#status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

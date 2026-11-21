@@ -1,195 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:,">
 <title>Twin Lanterns — Spot the Difference</title>
-<style>
-  :root {
-    --ink: #22303f;
-    --paper: #fdf6e3;
-    --card: #ffffff;
-    --line: #e3d3a8;
-    --red: #d94f3d;
-    --gold: #f2c14e;
-    --green: #1faa55;
-    --soft: #667085;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
-    background: linear-gradient(180deg, #26354e 0%, #fdf6e3 250px);
-    color: var(--ink);
-  }
-  header {
-    max-width: 1220px;
-    margin: 0 auto;
-    padding: 16px 16px 4px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px 18px;
-  }
-  h1 { font-size: 27px; margin: 0; letter-spacing: 0.5px; color: #fdf6e3; }
-  h1 small { display: block; font-size: 13px; color: #c3cede; font-weight: normal; }
-  .hud { display: flex; gap: 10px; align-items: center; margin-left: auto; flex-wrap: wrap; }
-  .stat {
-    background: var(--card);
-    border: 2px solid var(--line);
-    border-radius: 10px;
-    padding: 6px 12px;
-    text-align: center;
-    min-width: 88px;
-  }
-  .stat b { display: block; font-size: 20px; line-height: 1.1; }
-  .stat span { font-size: 11px; color: var(--soft); text-transform: uppercase; letter-spacing: 1px; }
-  #hud-timer.danger { color: var(--red); }
-  #hud-counter { color: var(--red); }
-  button {
-    font: inherit;
-    cursor: pointer;
-    border: 2px solid #d9c48a;
-    background: #fff7dd;
-    border-radius: 10px;
-    padding: 8px 12px;
-  }
-  button:hover:not(:disabled) { background: #ffefb0; }
-  button:disabled { opacity: 0.45; cursor: default; }
-  button.primary { background: var(--red); border-color: var(--red); color: #fff; font-weight: bold; }
-  button.primary:hover { background: #b93e2f; }
-  main { max-width: 1220px; margin: 0 auto; padding: 6px 16px 10px; }
-  #hud-message {
-    min-height: 22px;
-    margin: 2px 0 8px;
-    font-size: 15px;
-    color: #4b5563;
-  }
-  #hud-dots { display: inline-flex; gap: 6px; margin-left: 10px; vertical-align: middle; }
-  .dot {
-    width: 13px; height: 13px; border-radius: 50%;
-    background: #e5e7eb; border: 2px solid #d1d5db; display: inline-block;
-  }
-  .dot.found { background: var(--green); border-color: #14803f; }
-  .panels { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
-  figure { margin: 0; }
-  figcaption {
-    text-align: center; font-weight: bold; padding: 6px 0;
-    background: var(--card); border: 2px solid var(--line); border-bottom: none;
-    border-radius: 10px 10px 0 0;
-  }
-  figcaption span { color: var(--soft); font-weight: normal; font-size: 13px; }
-  canvas {
-    display: block;
-    width: 560px; max-width: calc(100vw - 60px); height: auto;
-    border: 2px solid var(--line); border-top: none; border-radius: 0 0 10px 10px;
-    background: #fff; cursor: crosshair;
-  }
-  footer {
-    max-width: 1220px; margin: 0 auto; padding: 0 16px 18px;
-    color: var(--soft); font-size: 13px; text-align: center;
-  }
-  .overlay {
-    position: fixed; inset: 0;
-    background: rgba(31, 41, 55, 0.72);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 10; padding: 20px;
-  }
-  .overlay.hidden { display: none; }
-  .card {
-    background: var(--paper);
-    border-radius: 16px;
-    padding: 26px 30px;
-    max-width: 640px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
-  }
-  .card h2 { margin: 0 0 8px; font-size: 28px; }
-  .card p { margin: 8px 0; line-height: 1.5; }
-  .card .keys { font-size: 13px; color: var(--soft); }
-  #level-picker { display: grid; gap: 10px; margin: 16px 0; text-align: left; }
-  .level-card {
-    display: block; width: 100%; text-align: left;
-    background: #fff; padding: 12px 14px;
-  }
-  .level-card b { font-size: 16px; }
-  .level-card span { display: block; font-size: 13px; color: var(--soft); margin-top: 2px; }
-  .level-card em { display: block; font-style: normal; font-size: 13px; margin-top: 4px; }
-</style>
+<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-<header>
-  <h1>Twin Lanterns<small>Spot the Difference — two pictures, one truth</small></h1>
-  <div class="hud">
-    <div class="stat"><b id="hud-level">Lantern Garden</b><span>Level</span></div>
-    <div class="stat"><b id="hud-timer">03:00</b><span>Time</span></div>
-    <div class="stat"><b id="hud-counter">7 left</b><span>To find</span></div>
-    <div class="stat"><b id="hud-score">0</b><span>Score</span></div>
-    <button id="btn-hint" type="button">Hint (3) [H]</button>
-    <button id="btn-mute" type="button">Sound: on [M]</button>
-    <button id="btn-restart" type="button">Restart [R]</button>
+<div id="stage">
+  <header id="hud">
+    <div class="brand">🏮 Twin Lanterns</div>
+    <div class="stat"><span class="label">Level</span><span id="hud-level">1 / 3</span></div>
+    <div class="stat"><span class="label">Scene</span><span id="hud-scene">Lantern Night</span></div>
+    <div class="stat"><span class="label">Score</span><span id="hud-score">0</span></div>
+    <div class="stat"><span class="label">Time</span><span id="hud-time">2:30</span></div>
+    <div class="stat big"><span class="label">Remaining</span><span id="hud-remaining">6</span></div>
+  </header>
+  <div id="board-wrap">
+    <canvas id="board" width="1280" height="720" aria-label="Two near-identical pictures side by side. Click a difference to mark it."></canvas>
+    <div id="overlay" class="hidden">
+      <div class="panel">
+        <h1 id="overlay-title"></h1>
+        <p id="overlay-text"></p>
+        <p id="overlay-sub" class="sub"></p>
+        <button id="overlay-btn" type="button"></button>
+        <p class="keys">Enter / Space — continue &nbsp;·&nbsp; H — hint (−50) &nbsp;·&nbsp; R — restart level &nbsp;·&nbsp; M — sound</p>
+      </div>
+    </div>
   </div>
-</header>
-<main>
-  <p id="hud-message">Pick a level and start hunting!<span id="hud-dots"></span></p>
-  <div class="panels">
-    <figure>
-      <figcaption>LEFT — the original <span>click a difference here or on the right</span></figcaption>
-      <canvas id="panel-left" width="560" height="420"></canvas>
-    </figure>
-    <figure>
-      <figcaption>RIGHT — spot the changes <span id="caption-right-count">7 differences hide between the two</span></figcaption>
-      <canvas id="panel-right" width="560" height="420"></canvas>
-    </figure>
-  </div>
-</main>
-<footer>
-  Mouse to hunt &middot; H hint &middot; R restart level &middot; N next level &middot; 1/2/3 pick a level &middot; M sound &middot; Enter start / continue &middot; Esc back to the menu.
-  Every scene is drawn by code — no photos, no copied art. Find them all before the timer runs out!
-</footer>
-
-<div id="overlay-menu" class="overlay">
-  <div class="card">
-    <h2>Twin Lanterns</h2>
-    <p>Two pictures hang side by side. They look the same — they are not.
-       Every scene hides a handful of differences: a missing bird, a changed
-       colour, a lantern without its tassel. Click a difference on either
-       picture to mark it. Find them all before the timer runs out.</p>
-    <p class="keys">Click with the mouse &middot; H for a hint (3 per level) &middot;
-       quick finds in a row build a combo bonus &middot; clearing a level pays a time bonus.</p>
-    <div id="level-picker"></div>
-    <p>Press Enter or pick a scene above to begin.</p>
-  </div>
+  <footer id="helpbar">
+    <span>Click a difference on either picture — a gold ring marks it on both sides.</span>
+    <span class="right">H — hint (−50, 3 per level) &nbsp;·&nbsp; R — restart &nbsp;·&nbsp; M — sound on/off</span>
+  </footer>
 </div>
-
-<div id="overlay-level-done" class="overlay hidden">
-  <div class="card">
-    <h2>Level clear!</h2>
-    <p id="level-done-text"></p>
-    <button id="btn-next" class="primary" type="button">Next level [N]</button>
-    <button id="btn-menu" type="button">Level menu</button>
-  </div>
-</div>
-
-<div id="overlay-time-up" class="overlay hidden">
-  <div class="card">
-    <h2>Time up!</h2>
-    <p id="time-up-text"></p>
-    <button id="btn-retry" class="primary" type="button">Try again [Enter]</button>
-  </div>
-</div>
-
-<div id="overlay-win" class="overlay hidden">
-  <div class="card">
-    <h2>You found them all!</h2>
-    <p id="win-text"></p>
-    <p>Three scenes, every difference found. The lanterns shine twice as bright tonight.</p>
-    <button id="btn-play-again" class="primary" type="button">Play again [Enter]</button>
-  </div>
-</div>
-
-<script type="module" src="./src/main.js"></script>
+<p id="status" role="status" aria-live="polite"></p>
+<script type="module" src="./src/game.js"></script>
 </body>
 </html>
